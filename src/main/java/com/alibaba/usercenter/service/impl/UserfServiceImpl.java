@@ -1,5 +1,4 @@
 package com.alibaba.usercenter.service.impl;
-import java.util.Date;
 
 import com.alibaba.usercenter.mapper.UserfMapper;
 import com.alibaba.usercenter.model.domain.Userf;
@@ -15,6 +14,8 @@ import org.springframework.util.DigestUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.alibaba.usercenter.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
 * @author ning
@@ -32,11 +33,6 @@ public class UserfServiceImpl extends ServiceImpl<UserfMapper, Userf> implements
      * 盐值，混淆密码
      */
     private static final String SALT = "maning";
-
-    /**
-     * 用户登录态键
-     */
-    private static final String USER_LOGIN_STATE = "userLoginState";
 
     @Override
     public long userfRegister(String userAccount, String userPassword, String checkPassword) {
@@ -111,18 +107,30 @@ public class UserfServiceImpl extends ServiceImpl<UserfMapper, Userf> implements
             return null;
         }
         // 3. 用户脱敏
-        Userf safetyUserf = new Userf();
-        safetyUserf.setId(userf.getId());
-        safetyUserf.setUsername(userf.getUsername());
-        safetyUserf.setUserAccount(userf.getUserAccount());
-        safetyUserf.setAvatarUrl(userf.getAvatarUrl());
-        safetyUserf.setGender(userf.getGender());
-        safetyUserf.setPhone(userf.getPhone());
-        safetyUserf.setEmail(userf.getEmail());
-        safetyUserf.setUserStatus(userf.getUserStatus());
-        safetyUserf.setCreateTime(userf.getCreateTime());
+        Userf safetyUserf = getSafetyUserf(userf);
         // 4. 记录用户的登录态
         request.getSession().setAttribute(USER_LOGIN_STATE, safetyUserf);
+        return safetyUserf;
+    }
+
+    /**
+     * 用户脱敏
+     * @param originUserf
+     * @return
+     */
+    @Override
+    public Userf getSafetyUserf(Userf originUserf) {
+        Userf safetyUserf = new Userf();
+        safetyUserf.setId(originUserf.getId());
+        safetyUserf.setUsername(originUserf.getUsername());
+        safetyUserf.setUserAccount(originUserf.getUserAccount());
+        safetyUserf.setAvatarUrl(originUserf.getAvatarUrl());
+        safetyUserf.setGender(originUserf.getGender());
+        safetyUserf.setPhone(originUserf.getPhone());
+        safetyUserf.setUserRole(originUserf.getUserRole());
+        safetyUserf.setEmail(originUserf.getEmail());
+        safetyUserf.setUserStatus(originUserf.getUserStatus());
+        safetyUserf.setCreateTime(originUserf.getCreateTime());
         return safetyUserf;
     }
 }

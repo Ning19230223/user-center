@@ -6,3 +6,7 @@ Content-Type: application/json
   "userPassword": "12345678"
 }
 
+### 查询用户
+
+GET http://localhost:8080/user/search
+

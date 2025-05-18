@@ -28,4 +28,11 @@ public interface UserfService extends IService<Userf> {
      * @return 脱敏后的用户信息
      */
     Userf userfLogin(String userAccount, String userPassword, HttpServletRequest request);
+
+    /**
+     * 用户脱敏
+     * @param originUserf
+     * @return
+     */
+    Userf getSafetyUserf(Userf originUserf);
 }

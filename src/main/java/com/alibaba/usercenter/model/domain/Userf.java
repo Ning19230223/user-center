@@ -64,7 +64,7 @@ public class Userf {
     private Date createTime;
 
     /**
-     * 
+     *
      */
     private Date updateTime;
 
@@ -73,4 +73,9 @@ public class Userf {
      */
     @TableLogic
     private Integer isDelete;
+
+    /**
+     * 0 - 普通角色 1 - 管理员
+     */
+    private Integer userRole;
 }
