@@ -2,6 +2,7 @@ package com.alibaba.usercenter.service;
 
 import com.alibaba.usercenter.model.domain.Userf;
 import com.baomidou.mybatisplus.extension.service.IService;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
 * @author ning
@@ -26,5 +27,5 @@ public interface UserfService extends IService<Userf> {
      * @param userPassword 用户密码
      * @return 脱敏后的用户信息
      */
-    Userf doLogin(String userAccount, String userPassword);
+    Userf doLogin(String userAccount, String userPassword, HttpServletRequest request);
 }

@@ -1,9 +1,7 @@
 package com.alibaba.usercenter.model.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.util.Date;
 import lombok.Data;
 
@@ -73,5 +71,6 @@ public class Userf {
     /**
      * 是否删除
      */
+    @TableLogic
     private Integer isDelete;
 }

@@ -1,4 +1,5 @@
 package com.alibaba.usercenter.service.impl;
+import java.util.Date;
 
 import com.alibaba.usercenter.mapper.UserfMapper;
 import com.alibaba.usercenter.model.domain.Userf;
@@ -6,6 +7,7 @@ import com.alibaba.usercenter.service.UserfService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -31,10 +33,16 @@ public class UserfServiceImpl extends ServiceImpl<UserfMapper, Userf> implements
      */
     private static final String SALT = "maning";
 
+    /**
+     * 用户登录态键
+     */
+    private static final String USER_LOGIN_STATE = "userLoginState";
+
     @Override
     public long userfRegister(String userAccount, String userPassword, String checkPassword) {
         // 1. 校验
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
+            // todo 修改为自定义异常
             return -1;
         }
         if (userAccount.length() < 4) {
@@ -74,7 +82,7 @@ public class UserfServiceImpl extends ServiceImpl<UserfMapper, Userf> implements
     }
 
     @Override
-    public Userf doLogin(String userAccount, String userPassword) {
+    public Userf doLogin(String userAccount, String userPassword, HttpServletRequest request) {
         // 1. 校验
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             return null;
@@ -102,7 +110,20 @@ public class UserfServiceImpl extends ServiceImpl<UserfMapper, Userf> implements
             log.info("userf login failed, userAccount cannot match userPassword.");
             return null;
         }
-        return userf;
+        // 3. 用户脱敏
+        Userf safetyUserf = new Userf();
+        safetyUserf.setId(userf.getId());
+        safetyUserf.setUsername(userf.getUsername());
+        safetyUserf.setUserAccount(userf.getUserAccount());
+        safetyUserf.setAvatarUrl(userf.getAvatarUrl());
+        safetyUserf.setGender(userf.getGender());
+        safetyUserf.setPhone(userf.getPhone());
+        safetyUserf.setEmail(userf.getEmail());
+        safetyUserf.setUserStatus(userf.getUserStatus());
+        safetyUserf.setCreateTime(userf.getCreateTime());
+        // 4. 记录用户的登录态
+        request.getSession().setAttribute(USER_LOGIN_STATE, safetyUserf);
+        return safetyUserf;
     }
 }
 
