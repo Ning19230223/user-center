@@ -29,4 +29,35 @@ public class UserfServiceTest {
         System.out.println(userf.getId());
         Assertions.assertTrue(result);
     }
+
+    @Test
+    public void userfRegister() {
+        String userAccount = "maning";
+        String userPassword = "";
+        String checkPassword = "123456";
+        long result = userfService.userfRegister(userAccount, userPassword, checkPassword);
+        Assertions.assertEquals(-1, result);
+        userAccount = "ma";
+        result = userfService.userfRegister(userAccount, userPassword, checkPassword);
+        Assertions.assertEquals(-1, result);
+        userAccount = "maning";
+        userPassword = "123456";
+        result = userfService.userfRegister(userAccount, userPassword, checkPassword);
+        Assertions.assertEquals(-1, result);
+        userAccount = "ma ning";
+        userPassword = "12345678";
+        checkPassword = "12345678";
+        result = userfService.userfRegister(userAccount, userPassword, checkPassword);
+        Assertions.assertEquals(-1, result);
+        checkPassword = "123456789";
+        result = userfService.userfRegister(userAccount, userPassword, checkPassword);
+        Assertions.assertEquals(-1, result);
+        userAccount = "123";
+        checkPassword = "12345678";
+        result = userfService.userfRegister(userAccount, userPassword, checkPassword);
+        Assertions.assertEquals(-1, result);
+        userAccount = "maning";
+        result = userfService.userfRegister(userAccount, userPassword, checkPassword);
+        Assertions.assertTrue(result > 0);
+    }
 }

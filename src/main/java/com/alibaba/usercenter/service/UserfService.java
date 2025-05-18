@@ -18,5 +18,5 @@ public interface UserfService extends IService<Userf> {
      * @param checkPassword 校验密码
      * @return 新用户id
      */
-    long userRegister(String userAccount, String userPassword, String checkPassword);
+    long userfRegister(String userAccount, String userPassword, String checkPassword);
 }

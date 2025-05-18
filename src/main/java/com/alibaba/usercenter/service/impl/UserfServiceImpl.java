@@ -26,7 +26,7 @@ public class UserfServiceImpl extends ServiceImpl<UserfMapper, Userf> implements
     private UserfMapper userfMapper;
 
     @Override
-    public long userRegister(String userAccount, String userPassword, String checkPassword) {
+    public long userfRegister(String userAccount, String userPassword, String checkPassword) {
         // 1. 校验
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
             return -1;
@@ -38,9 +38,9 @@ public class UserfServiceImpl extends ServiceImpl<UserfMapper, Userf> implements
             return -1;
         }
         // 账户不能包含特殊字符
-        String validPattern = "\\pP|\\pS|\\s+";
+        String validPattern = "[^a-zA-Z0-9._-]";
         Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
-        if (!matcher.find()) {
+        if (matcher.find()) {
             return -1;
         }
         // 密码和校验密码相同
@@ -49,8 +49,8 @@ public class UserfServiceImpl extends ServiceImpl<UserfMapper, Userf> implements
         }
         // 账户不能重复
         QueryWrapper<Userf> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("userAcount", userAccount);
-        long count = this.count(queryWrapper);
+        queryWrapper.eq("userAccount", userAccount);
+        long count = userfMapper.selectCount(queryWrapper);
         if (count > 0) {
             return -1;
         }
