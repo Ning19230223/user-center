@@ -27,5 +27,5 @@ public interface UserfService extends IService<Userf> {
      * @param userPassword 用户密码
      * @return 脱敏后的用户信息
      */
-    Userf doLogin(String userAccount, String userPassword, HttpServletRequest request);
+    Userf userfLogin(String userAccount, String userPassword, HttpServletRequest request);
 }

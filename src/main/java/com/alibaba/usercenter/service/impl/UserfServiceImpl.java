@@ -82,7 +82,7 @@ public class UserfServiceImpl extends ServiceImpl<UserfMapper, Userf> implements
     }
 
     @Override
-    public Userf doLogin(String userAccount, String userPassword, HttpServletRequest request) {
+    public Userf userfLogin(String userAccount, String userPassword, HttpServletRequest request) {
         // 1. 校验
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             return null;
