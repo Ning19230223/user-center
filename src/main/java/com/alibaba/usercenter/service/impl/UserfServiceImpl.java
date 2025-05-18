@@ -1,12 +1,12 @@
 package com.alibaba.usercenter.service.impl;
 
-import com.alibaba.usercenter.model.User;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.alibaba.usercenter.mapper.UserfMapper;
 import com.alibaba.usercenter.model.domain.Userf;
 import com.alibaba.usercenter.service.UserfService;
-import com.alibaba.usercenter.mapper.UserfMapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -20,10 +20,16 @@ import java.util.regex.Pattern;
 * @createDate 2025-05-17 13:57:37
 */
 @Service
+@Slf4j
 public class UserfServiceImpl extends ServiceImpl<UserfMapper, Userf> implements UserfService{
 
     @Resource
     private UserfMapper userfMapper;
+
+    /**
+     * 盐值，混淆密码
+     */
+    private static final String SALT = "maning";
 
     @Override
     public long userfRegister(String userAccount, String userPassword, String checkPassword) {
@@ -55,7 +61,6 @@ public class UserfServiceImpl extends ServiceImpl<UserfMapper, Userf> implements
             return -1;
         }
         // 2. 加密
-        final String SALT = "maning";
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
         // 3. 插入数据
         Userf userf = new Userf();
@@ -66,6 +71,38 @@ public class UserfServiceImpl extends ServiceImpl<UserfMapper, Userf> implements
             return -1;
         }
         return userf.getId();
+    }
+
+    @Override
+    public Userf doLogin(String userAccount, String userPassword) {
+        // 1. 校验
+        if (StringUtils.isAnyBlank(userAccount, userPassword)) {
+            return null;
+        }
+        if (userAccount.length() < 4) {
+            return null;
+        }
+        if (userPassword.length() < 8) {
+            return null;
+        }
+        // 账户不能包含特殊字符
+        String validPattern = "[^a-zA-Z0-9._-]";
+        Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
+        if (matcher.find()) {
+            return null;
+        }
+        // 2. 加密
+        String encrptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
+        // 查询用户是否存在
+        QueryWrapper<Userf> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("userAccount", userAccount);
+        queryWrapper.eq("userPassword", encrptPassword);
+        Userf userf = userfMapper.selectOne(queryWrapper);
+        if (userf == null) {
+            log.info("userf login failed, userAccount cannot match userPassword.");
+            return null;
+        }
+        return userf;
     }
 }
 

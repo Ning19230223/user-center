@@ -19,4 +19,12 @@ public interface UserfService extends IService<Userf> {
      * @return 新用户id
      */
     long userfRegister(String userAccount, String userPassword, String checkPassword);
+
+    /**
+     * 用户登录
+     * @param userAccount 用户账户
+     * @param userPassword 用户密码
+     * @return 脱敏后的用户信息
+     */
+    Userf doLogin(String userAccount, String userPassword);
 }
